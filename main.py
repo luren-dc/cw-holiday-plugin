@@ -129,11 +129,10 @@ class Plugin(PluginBase):
         content_layout = self.widget.findChild(QHBoxLayout, "contentLayout")
         self.content = content_layout.findChild(QLabel, "content")
         self.icon = IconWidget()
+        self.icon.resize(36, 26)
         content_layout.insertWidget(0, self.icon)
-        content_layout.setAlignment(self.icon, Qt.AlignmentFlag.AlignCenter)
 
     def _update_ui(self, holiday: Optional[Holiday]):
-        self.icon.setVisible(False)
         if not holiday:
             self.method.change_widget_content(
                 widget_code=WIDGET_CODE, title="假期正在装载中...", content="0 天"
@@ -147,9 +146,7 @@ class Plugin(PluginBase):
             title=f"距离 {holiday['name']} 还有",
             content=f"{holiday['days_left']} 天",
         )
-        if holiday["days_left"] < 2:
-            self.icon.setIcon(FluentIcon.CALORIES)
-            self.icon.setVisible(True)
+        self.icon.setIcon(FluentIcon.CALORIES)
 
     def update_holiday(self):
         self.retry_timer.stop()
