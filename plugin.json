@@ -1,13 +1,11 @@
 {
-    "name": "每日一言",
-    "description": "每天分享一句话，激励大家学习。",
-    "version": "1.4.0",
+    "name": "假期倒计时",
+    "description": "获取法定节假日倒计时时间",
+    "version": "1.0.0",
     "plugin_ver": 1,
-    "author": "LaoShui",
+    "author": "Luren",
     "settings": false,
-
-    "url": "https://github.com/laoshuikaixue/cw-yiyan-plugin",
+    "url": "https://github.com/luren-dc/cw-holiday-plugin",
     "branch": "main",
-
-    "update_date": "2025/02/08"
+    "update_date": "2025/02/23"
 }

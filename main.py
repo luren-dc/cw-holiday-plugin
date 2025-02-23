@@ -1,13 +1,11 @@
-from typing import Optional, TypedDict, cast
+from typing import Optional, TypedDict
 import requests
 import os
 import json
 import re
 from datetime import datetime
-from PyQt5.QtCore import QTimer, QThread, Qt, pyqtSignal
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QWidget
+from PyQt5.QtCore import QTimer, QThread, pyqtSignal
 from loguru import logger
-from qfluentwidgets import FluentIcon, IconWidget
 
 from .ClassWidgets.base import PluginBase
 
@@ -111,34 +109,18 @@ class Plugin(PluginBase):
         self.cache_dir = os.path.join(self.PATH, "holiday_cache")
         self.retry_timer = QTimer()
         self.retry_timer.timeout.connect(self.update_holiday)
-        self.widget: Optional[QWidget] = None
-        self.content: Optional[QLabel] = None
-        self.icon: Optional[IconWidget] = None
 
     def execute(self):
         """插件启动时执行"""
-        self._init_ui()
-        if self.widget:
-            os.makedirs(self.cache_dir, exist_ok=True)
-            self.update_holiday()
-
-    def _init_ui(self):
-        self.widget = cast(QWidget, self.method.get_widget(WIDGET_CODE))
-        if not self.widget:
-            return
-        content_layout = self.widget.findChild(QHBoxLayout, "contentLayout")
-        self.content = content_layout.findChild(QLabel, "content")
-        self.icon = IconWidget()
-        self.icon.resize(36, 26)
-        content_layout.insertWidget(0, self.icon)
+        os.makedirs(self.cache_dir, exist_ok=True)
+        self._update_ui(None)
+        self.update_holiday()
 
     def _update_ui(self, holiday: Optional[Holiday]):
         if not holiday:
             self.method.change_widget_content(
                 widget_code=WIDGET_CODE, title="假期正在装载中...", content="0 天"
             )
-            self.icon.setIcon(FluentIcon.ASTERISK)
-            self.icon.setVisible(True)
             return
 
         self.method.change_widget_content(
@@ -146,7 +128,6 @@ class Plugin(PluginBase):
             title=f"距离 {holiday['name']} 还有",
             content=f"{holiday['days_left']} 天",
         )
-        self.icon.setIcon(FluentIcon.CALORIES)
 
     def update_holiday(self):
         self.retry_timer.stop()
