@@ -118,18 +118,21 @@ class Plugin(PluginBase):
     def execute(self):
         """插件启动时执行"""
         self._init_ui()
-        os.makedirs(self.cache_dir, exist_ok=True)
-        self.update_holiday()
+        if self.widget:
+            os.makedirs(self.cache_dir, exist_ok=True)
+            self.update_holiday()
 
     def _init_ui(self):
         self.widget = cast(QWidget, self.method.get_widget(WIDGET_CODE))
+        if not self.widget:
+            return
         content_layout = self.widget.findChild(QHBoxLayout, "contentLayout")
         self.content = content_layout.findChild(QLabel, "content")
         self.icon = IconWidget()
-        content_layout.insertItem(0, self.icon)
+        content_layout.insertWidget(0, self.icon)
         content_layout.setAlignment(self.icon, Qt.AlignmentFlag.AlignCenter)
 
-    def _update_ui(self, holiday: Holiday | None):
+    def _update_ui(self, holiday: Optional[Holiday]):
         self.icon.setVisible(False)
         if not holiday:
             self.method.change_widget_content(
